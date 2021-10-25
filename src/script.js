@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { BoxGeometry, DoubleSide } from 'three'
 
 /**
  * Base
@@ -53,82 +54,42 @@ const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 /**
  * Bodys
  */
-const sceneGroup = new THREE.Group();
-const heightOfCube = 12
-const centerCube = new THREE.Mesh(
-    new THREE.BoxGeometry(heightOfCube * 2, heightOfCube, heightOfCube * 2),
-    new THREE.MeshBasicMaterial({color: 0xffffff})
+
+
+// Floor
+const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(50, 50),
+    new THREE.MeshStandardMaterial({
+        color: '#444444',
+        metalness: 0,
+        roughness: 0.5
+    })
 )
-centerCube.position.y = heightOfCube / 2
-centerCube.position.z = -22
-sceneGroup.add(centerCube)
+floor.rotation.x = - Math.PI * 0.5
+scene.add(floor)
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+scene.add(ambientLight)
 
 /**
  * Model
+ * /running-man/running_man_try_2.glb
  */
-const room1 = new THREE.Group();
-const room2 = new THREE.Group();
-const room3 = new THREE.Group();
-gltfLoader.load(
-    'Schritt_1.glb',
+ let mixer = null
+ gltfLoader.load(
+    '/running-man/running_man_try_2.glb',
     (gltf) =>
     {
-        gltf.scene.children.forEach(child => {
-            child.material = materialTest
-            room1.add(child)
-        })
-        // Get each object
-        const left_human = room1.children.find((child) => child.name === 'Cube')
-        const house = room1.children.find((child) => child.name === 'Cube002')
+        scene.add(gltf.scene)
+        //gltf.scene.scale.set(0.05, 0.05, 0.05)
+        gltf.scene.scale.set(4, 4, 4)
+        console.log(gltf.animations)
 
-        // Apply materials
-        left_human.material = cube1Material
-        house.material = cube2Material
+        mixer = new THREE.AnimationMixer(gltf.scene)
+        const action = mixer.clipAction(gltf.animations[2])
+        action.play()
     }
 )
-gltfLoader.load(
-    'Schritt_2.glb',
-    (gltf) =>
-    {
-        gltf.scene.children.forEach(child => {
-            child.material = materialTest
-            room2.add(child)
-        })
-        // Get each object
-        const room = room2.children.find((child) => child.name === 'room')
-
-        // Apply materials
-        room.material = cube1Material
-    }
-)
-
-gltfLoader.load(
-    'Schritt_3.glb',
-    (gltf) =>
-    {
-        gltf.scene.children.forEach(child => {
-            child.material = materialTest
-            room3.add(child)
-        })
-        // Get each object
-        const room = room3.children.find((child) => child.name === 'room')
-
-        // Apply materials
-        room.material = cube1Material
-    }
-)
-
-room2.rotation.y = Math.PI / 2
-room2.position.z -= 21.5
-room2.position.x += 22
-
-room3.rotation.y = - Math.PI / 2
-room3.position.z -= 21.5
-room3.position.x -= 22
-
-
-sceneGroup.add(room1, room2, room3)
-scene.add(sceneGroup)
 
 /**
  * Sizes
@@ -158,9 +119,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 10
-camera.position.y = 10
-camera.position.z = 30
+camera.position.set(- 8, 4, 8)
 scene.add(camera)
 
 // Controls
@@ -174,7 +133,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true
 })
-renderer.outputEncoding = THREE.sRGBEncoding
+//renderer.outputEncoding = THREE.sRGBEncoding
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -182,18 +141,23 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 const clock = new THREE.Clock()
-
-console.log(sceneGroup)
+let previousTime = 0
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
 
     // Update controls
     controls.update()
 
     //rotate cube
-    sceneGroup.rotation.y = - elapsedTime / 5
+    //sceneGroup.rotation.y = - elapsedTime / 5
+    if(mixer)
+    {
+        mixer.update(deltaTime)
+    }
 
     // Render
     renderer.render(scene, camera)

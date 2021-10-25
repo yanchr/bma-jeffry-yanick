@@ -4,11 +4,16 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-import { BoxGeometry, DoubleSide } from 'three'
+import gsap from 'gsap'
+import { RunningFunctions } from './runningFunctions'
 
 /**
  * Base
  */
+const runningFunctions = new RunningFunctions()
+const utils = {}
+utils.runningMan = {}
+utils.runningMan.animations = []
 // Debug
 const gui = new dat.GUI({
     width: 400
@@ -45,9 +50,9 @@ bakedTexture.encoding = THREE.sRGBEncoding
 /**
  * Materials
  */
-const materialTest = new THREE.MeshBasicMaterial({color: 0x999999})
-const cube1Material = new THREE.MeshBasicMaterial({color: 0x555599})
-const cube2Material = new THREE.MeshBasicMaterial({color: 0x115511})
+const materialTest = new THREE.MeshBasicMaterial({ color: 0x999999 })
+const cube1Material = new THREE.MeshBasicMaterial({ color: 0x555599 })
+const cube2Material = new THREE.MeshBasicMaterial({ color: 0x115511 })
 // Baked material
 const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 
@@ -58,13 +63,14 @@ const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 
 // Floor
 const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(50, 50),
+    new THREE.PlaneGeometry(50, 200),
     new THREE.MeshStandardMaterial({
         color: '#444444',
         metalness: 0,
         roughness: 0.5
     })
 )
+floor.position.z = 90
 floor.rotation.x = - Math.PI * 0.5
 scene.add(floor)
 
@@ -75,21 +81,42 @@ scene.add(ambientLight)
  * Model
  * /running-man/running_man_try_2.glb
  */
- let mixer = null
- gltfLoader.load(
+let mixer = null
+let action = null
+const runningManGroup = new THREE.Group()
+
+utils.runningMan.position = { x: 0, y: 0, z: 0 }
+gltfLoader.load(
     '/running-man/running_man_try_2.glb',
-    (gltf) =>
-    {
-        scene.add(gltf.scene)
+    (gltf) => {
+        runningManGroup.add(gltf.scene)
+        scene.add(runningManGroup)
         //gltf.scene.scale.set(0.05, 0.05, 0.05)
         gltf.scene.scale.set(4, 4, 4)
-        console.log(gltf.animations)
+        utils.runningMan.position = { x: 0, y: 0, z: 0 }
+        runningFunctions.position = { x: 0, y: 0, z: 0 }
+        gltf.scene.children[0].position.add(utils.runningMan.position)
 
         mixer = new THREE.AnimationMixer(gltf.scene)
-        const action = mixer.clipAction(gltf.animations[2])
+        utils.runningMan.animations = gltf.animations
+        runningFunctions.animations = gltf.animations
+        action = mixer.clipAction(utils.runningMan.animations[1])
         action.play()
     }
 )
+
+let clickDisabled = false;
+document.addEventListener('keydown', e => {
+    if (!clickDisabled) {
+        runningFunctions.runningManManager(e)
+        clickDisabled = true
+        setTimeout(function () { clickDisabled = false }, 100);
+    }
+});
+document.addEventListener('keyup', e => {
+    setTimeout(function () { stopRunning() }, 1000);
+});
+
 
 /**
  * Sizes
@@ -99,8 +126,7 @@ const sizes = {
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -133,7 +159,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true
 })
-//renderer.outputEncoding = THREE.sRGBEncoding
+renderer.outputEncoding = THREE.sRGBEncoding
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -143,8 +169,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 const clock = new THREE.Clock()
 let previousTime = 0
 
-const tick = () =>
-{
+const tick = () => {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
@@ -152,10 +177,7 @@ const tick = () =>
     // Update controls
     controls.update()
 
-    //rotate cube
-    //sceneGroup.rotation.y = - elapsedTime / 5
-    if(mixer)
-    {
+    if (mixer) {
         mixer.update(deltaTime)
     }
 
@@ -167,3 +189,26 @@ const tick = () =>
 }
 
 tick()
+
+
+/**
+ * Functions
+ */
+export function gaspRunningManToPosition(position) {
+    gsap.to(runningManGroup.position, { duration: 1, x: position.x, y: position.y, z: position.z })
+    camera.position.x = position.x - (20);
+    camera.position.y = position.y + 50;
+    camera.position.z = position.z - (20);
+    action = mixer.clipAction(utils.runningMan.animations[2])
+    action.play()
+}
+
+export function rotateRunningMan(rotation) {
+    runningManGroup.rotation.y += rotation
+}
+
+function stopRunning() {
+    action.stop()
+    action = mixer.clipAction(utils.runningMan.animations[1])
+    action.play()
+}

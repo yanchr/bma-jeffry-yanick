@@ -1,19 +1,34 @@
 import './style.css'
 import * as dat from 'dat.gui'
 import * as THREE from 'three'
+import * as script from './script'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import gsap from 'gsap'
-import { RunningFunctions } from './runningFunctions'
+import { listenOnEvents } from './eventListeners'
+import {RunningFunctions} from './runningFunctions'
+import { MyRaycaster } from './myRaycaster'
 
 /**
  * Base
  */
-const runningFunctions = new RunningFunctions()
+ const runningFunctions = new RunningFunctions()
+ const myRaycaster = new MyRaycaster()
+
+listenOnEvents(runningFunctions)
 const utils = {}
+utils.orbitControls = false
 utils.runningMan = {}
 utils.runningMan.animations = []
+utils.currentCameraPosition = 0
+utils.cameraPositions = [
+   [-50, 30, -20], // Left Side
+    [0, 20, 30], // Back
+    [50, 30, 20], // Right Side
+    [0, 20, -30] //Front
+]
+utils.allObjects = []
 // Debug
 const gui = new dat.GUI({
     width: 400
@@ -43,36 +58,13 @@ gltfLoader.setDRACOLoader(dracoLoader)
  * Textures
  */
 
-const bakedTexture = textureLoader.load('baked.jpg')
-bakedTexture.flipY = false
-bakedTexture.encoding = THREE.sRGBEncoding
-
 /**
  * Materials
  */
-const materialTest = new THREE.MeshBasicMaterial({ color: 0x999999 })
-const cube1Material = new THREE.MeshBasicMaterial({ color: 0x555599 })
-const cube2Material = new THREE.MeshBasicMaterial({ color: 0x115511 })
-// Baked material
-const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 
 /**
  * Bodys
  */
-
-
-// Floor
-const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(50, 200),
-    new THREE.MeshStandardMaterial({
-        color: '#444444',
-        metalness: 0,
-        roughness: 0.5
-    })
-)
-floor.position.z = 90
-floor.rotation.x = - Math.PI * 0.5
-scene.add(floor)
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
 scene.add(ambientLight)
@@ -85,17 +77,16 @@ let mixer = null
 let action = null
 const runningManGroup = new THREE.Group()
 
-utils.runningMan.position = { x: 0, y: 0, z: 0 }
+utils.runningMan.position = { x: -20, y: 2, z: 150 }
+utils.runningMan.rotation = Math.PI
 gltfLoader.load(
-    '/running-man/running_man_try_2.glb',
+    '/running-man/running_man_try_3.glb',
     (gltf) => {
         runningManGroup.add(gltf.scene)
         scene.add(runningManGroup)
-        //gltf.scene.scale.set(0.05, 0.05, 0.05)
-        gltf.scene.scale.set(4, 4, 4)
-        utils.runningMan.position = { x: 0, y: 0, z: 0 }
-        runningFunctions.position = { x: 0, y: 0, z: 0 }
-        gltf.scene.children[0].position.add(utils.runningMan.position)
+        gltf.scene.scale.set(7, 7, 7)
+        runningFunctions.position = utils.runningMan.position
+        runningFunctions.rotation = utils.runningMan.rotation
 
         mixer = new THREE.AnimationMixer(gltf.scene)
         utils.runningMan.animations = gltf.animations
@@ -104,18 +95,41 @@ gltfLoader.load(
         action.play()
     }
 )
+const scenes = new THREE.Group()
+let sceneMixer = null
+let sceneAction = null
+gsap.to(runningManGroup.position, { duration: 1, x: utils.runningMan.position.x, y: utils.runningMan.position.y, z: utils.runningMan.position.z })
+runningManGroup.rotation.y = utils.runningMan.rotation
+//this.gaspRunningManToPosition(utils.runningMan.position)
+gltfLoader.load(
+    '/scenes/jeffry-scene-18.glb',
+    (gltf) => {
 
-let clickDisabled = false;
-document.addEventListener('keydown', e => {
-    if (!clickDisabled) {
-        runningFunctions.runningManManager(e)
-        clickDisabled = true
-        setTimeout(function () { clickDisabled = false }, 100);
+        scene.add(gltf.scene)
+        console.log(gltf.animations)
+        gltf.scene.scale.set(0.5, 0.5, 0.5)
+        gltf.scene.rotation.y = -Math.PI / 2
+        gltf.scene.children.forEach(child => utils.allObjects.push(child))
+
+        // Animations
+        sceneMixer = new THREE.AnimationMixer(gltf.scene)
+        sceneAction = sceneMixer.clipAction(gltf.animations[3])
+        sceneAction.play()
+        
+        for (let i = 4; i < 23; i++){
+            sceneAction = sceneMixer.clipAction(gltf.animations[i])
+            sceneAction.play()
+        }
     }
-});
-document.addEventListener('keyup', e => {
-    setTimeout(function () { stopRunning() }, 1000);
-});
+)
+scenes.position.x += 20
+scenes.position.z += 20
+scenes.scale.set(0.3, 0.3, 0.3)
+
+// Raycaster
+//scene.add(myRaycaster.getRayCasterObject())
+
+
 
 
 /**
@@ -144,9 +158,7 @@ window.addEventListener('resize', () => {
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(- 8, 4, 8)
-scene.add(camera)
+const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 5000)
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -175,14 +187,22 @@ const tick = () => {
     previousTime = elapsedTime
 
     // Update controls
-    controls.update()
+    if(utils.orbitControls) {controls.update()}
+    if(!utils.orbitControls) {updateCamera(runningManGroup.position)}
 
     if (mixer) {
         mixer.update(deltaTime)
     }
+    if (sceneMixer) {
+        sceneMixer.update(deltaTime)
+    }
+
 
     // Render
     renderer.render(scene, camera)
+
+    // camera
+    //thirdPersonCamera.Update(elapsedTime)
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
@@ -194,21 +214,63 @@ tick()
 /**
  * Functions
  */
-export function gaspRunningManToPosition(position) {
+export function gaspRunningManToPosition(position)
+{
+    if(action._clip.name == "idle") action.stop()
+    if(action._clip.name != "jump") {
     gsap.to(runningManGroup.position, { duration: 1, x: position.x, y: position.y, z: position.z })
-    camera.position.x = position.x - (20);
-    camera.position.y = position.y + 50;
-    camera.position.z = position.z - (20);
-    action = mixer.clipAction(utils.runningMan.animations[2])
+
+    //Raycaster
+    myRaycaster.updateCarRaycast(position, runningFunctions.calculateForwards(runningManGroup.position.clone(), 100), runningManGroup.rotation.y)
+
+    //Animation
+    action = mixer.clipAction(utils.runningMan.animations[3])
     action.play()
+    }
 }
 
-export function rotateRunningMan(rotation) {
+export function rotateRunningMan(rotation)
+{
+
     runningManGroup.rotation.y += rotation
 }
 
-function stopRunning() {
+export function stopRunning() {
     action.stop()
     action = mixer.clipAction(utils.runningMan.animations[1])
     action.play()
+}
+
+export function jump()
+{
+    action.stop()
+    console.log(utils.runningMan.animations)
+    action = mixer.clipAction(utils.runningMan.animations[2])
+    action.play()
+    setTimeout(function () {
+        stopRunning()
+    }, 1666);
+    
+}
+
+
+function updateCamera(position)
+{
+    camera.lookAt(runningFunctions.calculateForwards(runningManGroup.position.clone(), 1))
+    cameraPositions(position)
+}
+
+function cameraPositions(position)
+{
+    gsap.to(camera.position, { duration: 1, x: position.x + utils.cameraPositions[utils.currentCameraPosition][0], y:  position.y + utils.cameraPositions[utils.currentCameraPosition][1], z:  position.z + utils.cameraPositions[utils.currentCameraPosition][2]})
+}
+
+export function changeCameraPosition()
+{
+    utils.currentCameraPosition = (utils.cameraPositions.length - 1) > utils.currentCameraPosition ? (utils.currentCameraPosition + 1): 0
+}
+
+export function changeOrbitControls()
+{
+    utils.orbitControls = !utils.orbitControls
 }

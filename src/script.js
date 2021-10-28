@@ -10,6 +10,8 @@ import { listenOnEvents } from './eventListeners'
 import {RunningFunctions} from './runningFunctions'
 import { MyRaycaster } from './myRaycaster'
 
+
+
 /**
  * Base
  */
@@ -18,7 +20,7 @@ import { MyRaycaster } from './myRaycaster'
  
  listenOnEvents(runningFunctions)
  const utils = {}
- utils.orbitControls = false
+ utils.orbitControls = true
  utils.runningMan = {}
  utils.runningMan.animations = []
  utils.currentCameraPosition = 0
@@ -41,17 +43,68 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
+ * Overlay
+ */
+const overlayGeometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1)
+const overlayMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    uniforms:
+    {
+        uAlpha: {value: 1}
+    },
+    vertexShader: `
+        void main()
+        {
+            gl_Position = vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+            uniform float uAlpha; 
+
+            void main()
+            {
+                gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
+            }
+        `
+
+})
+const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
+scene.add(overlay)
+
+/**
  * Loaders
  */
-// Texture loader
-const textureLoader = new THREE.TextureLoader()
+const loadingBarElement = document.querySelector('.loading-bar')
+const loadingCircleElement = document.querySelector('.loader')
+const infoElement = document.querySelector('.infos')
+ const loadingManger = new THREE.LoadingManager(
+    // Loaded
+    () => 
+    {
+        gsap.delayedCall(0.5, () => {
+            gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0})
+            loadingBarElement.classList.add('ended')
+            loadingCircleElement.classList.add('fadeOut')
+            infoElement.classList.add('fadeOut')
+            loadingBarElement.style.transform = ''
+            utils.orbitControls = false
+        })
+    },
+
+    // Progress
+    (itemUrl, itemsLoaded, itemTotal) => 
+    {   
+        const progressRatio = itemsLoaded / itemTotal
+        loadingBarElement.style.transform = `scaleX(${progressRatio})`
+    }
+)
 
 // Draco loader
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('draco/')
 
 // GLTF loader
-const gltfLoader = new GLTFLoader()
+const gltfLoader = new GLTFLoader(loadingManger)
 gltfLoader.setDRACOLoader(dracoLoader)
 
 /**
@@ -156,7 +209,7 @@ window.addEventListener('resize', () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 5000)
-
+camera.position.set(20, 50, 20)
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
@@ -184,7 +237,8 @@ const tick = () => {
     previousTime = elapsedTime
 
     // Update controls
-    if(utils.orbitControls) {controls.update()}
+    controls.update()
+    //if(utils.orbitControls) {controls.update()}
     if(!utils.orbitControls) {updateCamera(runningManGroup.position)}
 
     if (mixer) {
@@ -196,8 +250,6 @@ const tick = () => {
 
     myRaycaster.detectRaycast(utils.allObjects)
     myRaycaster.updateCarRaycast(runningManGroup.position.clone(), runningFunctions.calculateForwards(runningManGroup.position.clone(), 100), runningManGroup.rotation.y)
-
-
 
     // Render
     renderer.render(scene, camera)

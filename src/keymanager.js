@@ -2,7 +2,7 @@ import * as script from './script'
 import { RunningFunctions } from './runningFunctions'
 
 let speed = 0.3
-const rotationStrength = 32
+const rotationStrength = 128
 export function keyManager(key, runningFunctions) {
     switch (key) {
         case 'w':

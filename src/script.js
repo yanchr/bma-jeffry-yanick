@@ -15,20 +15,20 @@ import { MyRaycaster } from './myRaycaster'
  */
  const runningFunctions = new RunningFunctions()
  const myRaycaster = new MyRaycaster()
-
-listenOnEvents(runningFunctions)
-const utils = {}
-utils.orbitControls = false
-utils.runningMan = {}
-utils.runningMan.animations = []
-utils.currentCameraPosition = 0
-utils.cameraPositions = [
-   [-50, 30, -20], // Left Side
-    [0, 20, 30], // Back
-    [50, 30, 20], // Right Side
-    [0, 20, -30] //Front
-]
-utils.allObjects = []
+ 
+ listenOnEvents(runningFunctions)
+ const utils = {}
+ utils.orbitControls = false
+ utils.runningMan = {}
+ utils.runningMan.animations = []
+ utils.currentCameraPosition = 0
+ utils.allObjects = []
+ utils.cameraPositions = [
+    [-50, 30, -20], // Left Side
+     [0, 20, 30], // Back
+     [50, 30, 20], // Right Side
+     [0, 20, -30] //Front
+ ]
 // Debug
 const gui = new dat.GUI({
     width: 400
@@ -112,11 +112,8 @@ gltfLoader.load(
         gltf.scene.children.forEach(child => utils.allObjects.push(child))
 
         // Animations
-        sceneMixer = new THREE.AnimationMixer(gltf.scene)
-        sceneAction = sceneMixer.clipAction(gltf.animations[3])
-        sceneAction.play()
-        
-        for (let i = 4; i < 23; i++){
+        sceneMixer = new THREE.AnimationMixer(gltf.scene)        
+        for (let i = 0; i < gltf.animations.length; i++){
             sceneAction = sceneMixer.clipAction(gltf.animations[i])
             sceneAction.play()
         }
@@ -127,7 +124,7 @@ scenes.position.z += 20
 scenes.scale.set(0.3, 0.3, 0.3)
 
 // Raycaster
-//scene.add(myRaycaster.getRayCasterObject())
+scene.add(myRaycaster.getRayCasterObject())
 
 
 
@@ -197,6 +194,10 @@ const tick = () => {
         sceneMixer.update(deltaTime)
     }
 
+    myRaycaster.detectRaycast(utils.allObjects)
+    myRaycaster.updateCarRaycast(runningManGroup.position.clone(), runningFunctions.calculateForwards(runningManGroup.position.clone(), 100), runningManGroup.rotation.y)
+
+
 
     // Render
     renderer.render(scene, camera)
@@ -221,8 +222,7 @@ export function gaspRunningManToPosition(position)
     gsap.to(runningManGroup.position, { duration: 1, x: position.x, y: position.y, z: position.z })
 
     //Raycaster
-    myRaycaster.updateCarRaycast(position, runningFunctions.calculateForwards(runningManGroup.position.clone(), 100), runningManGroup.rotation.y)
-
+    
     //Animation
     action = mixer.clipAction(utils.runningMan.animations[3])
     action.play()
@@ -257,6 +257,11 @@ export function jump()
 function updateCamera(position)
 {
     camera.lookAt(runningFunctions.calculateForwards(runningManGroup.position.clone(), 1))
+    utils.cameraPositions[1][2] = runningFunctions.calculateForwards(runningManGroup.position.clone(), -30).z - runningManGroup.position.clone().z
+    utils.cameraPositions[1][0] = runningFunctions.calculateForwards(runningManGroup.position.clone(), -30).x - runningManGroup.position.clone().x
+
+    utils.cameraPositions[3][2] = runningFunctions.calculateForwards(runningManGroup.position.clone(), 30).z - runningManGroup.position.clone().z
+    utils.cameraPositions[3][0] = runningFunctions.calculateForwards(runningManGroup.position.clone(), 30).x - runningManGroup.position.clone().x
     cameraPositions(position)
 }
 

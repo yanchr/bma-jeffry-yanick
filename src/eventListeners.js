@@ -1,9 +1,9 @@
-import { stopRunning } from './script'
 import { keyManager } from './keymanager';
+import * as script from './script'
 import * as THREE from 'three'
 
 
-export function listenOnEvents(runningFunctions) {
+export function listenOnEvents(runningFunctions, runningMan, camera) {
 
     let keys = {
         w: false,
@@ -15,12 +15,16 @@ export function listenOnEvents(runningFunctions) {
 
     addEventListener('click', e =>
     {
-        console.log('Click')
-    })   
+        //console.log('Click')
+    })  
+    
+    window.addEventListener('resize', () => {
+        script.resize()
+    })
 
     addEventListener("keypress", (e) =>
     {
-        keyManager(e.key, runningFunctions)
+        goToKeyManager(e.key)
     })
   
     addEventListener("keydown", (e) =>
@@ -34,7 +38,7 @@ export function listenOnEvents(runningFunctions) {
   
     addEventListener("keyup", (e) =>
     {
-        if (e.key.toLowerCase() === "w" || e.key == "ArrowUp")  {keys.w = false; setTimeout(function () { stopRunning() }, 1000);}
+        if (e.key.toLowerCase() === "w" || e.key == "ArrowUp")  {keys.w = false; setTimeout(function () { runningMan.stopRunning() }, 1000);}
         if (e.key.toLowerCase() === "a" || e.key == "ArrowLeft")  keys.a = false
         if (e.key.toLowerCase() === "s" || e.key == "ArrowDown")  keys.s = false
         if (e.key.toLowerCase() === "d" || e.key == "ArrowRight")  keys.d = false
@@ -48,16 +52,21 @@ export function listenOnEvents(runningFunctions) {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
-    if(keys.w) keyManager('w', runningFunctions)
-    if(keys.a) keyManager('a', runningFunctions)
-    if(keys.d) keyManager('d', runningFunctions)
-    if(keys.s) keyManager('s', runningFunctions)  
-    if(keys.shift) keyManager('shift', runningFunctions)  
-    if(!keys.shift) keyManager('notshift', runningFunctions)  
+    if(keys.w) goToKeyManager('w')
+    if(keys.a) goToKeyManager('a')
+    if(keys.d) goToKeyManager('d')
+    if(keys.s) goToKeyManager('s')
+    if(keys.shift) goToKeyManager('shift')
+    if(!keys.shift) goToKeyManager('notshift')  
     window.requestAnimationFrame(tick)
     }
     
     tick()
+
+    function goToKeyManager(key)
+    {
+        keyManager(key, runningFunctions, runningMan, camera)
+    }
 
 
 

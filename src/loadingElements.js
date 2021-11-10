@@ -51,7 +51,7 @@ export class LoadingElements {
                     infoElement.classList.add('fadeOut')
                     loadingBarElement.style.transform = ''
                     script.changeOrbitControls()
-                    script.positionPoints()
+                    //script.positionPoints()
                     this.sceneReady = true
                 })
             },

@@ -52,7 +52,7 @@ const sizes = {
     height: window.innerHeight
 }
 const runningMan = new RunningMan(gltfLoader, runningFunctions)
-const milestones = new Milestones(gltfLoader)
+// const milestones = new Milestones(gltfLoader)
 const camera = new MyCamera(sizes, runningFunctions, runningMan)
 listenOnEvents(runningFunctions, runningMan, camera)
 
@@ -77,7 +77,7 @@ scene.background = environmentMap
  * Bodys
  */
 scene.add(runningMan.getGroup())
-scene.add(milestones.getGroup())
+//scene.add(milestones.getGroup())
 
 // Raycaster
 const pointsRaycaster = new THREE.Raycaster()
@@ -125,10 +125,10 @@ const tick = () => {
     //if(utils.orbitControls) {controls.update()}
     if (!utils.orbitControls) camera.updateCamera(runningMan.getGroup().position)
     if (runningMan.mixer) runningMan.mixer.update(deltaTime)
-    if (milestones.mixer) milestones.mixer.update(deltaTime)
+    //if (milestones.mixer) milestones.mixer.update(deltaTime)
     if (loadingElements.sceneReady) loadPoints()
 
-    myRaycaster.detectRaycast(milestones.getAll())
+    //myRaycaster.detectRaycast(milestones.getAll())
     myRaycaster.updateCarRaycast(runningMan.getGroup().position.clone(), runningFunctions.calculateForwards(runningMan.getGroup().position.clone(), 100), runningMan.getGroup().rotation.y)
 
     // Render
@@ -155,7 +155,7 @@ export function resize() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 }
 
-export function positionPoints() {
+export function poswitionPoints() {
     for (const object of milestones.getAll()) {
         if (object.name.split('_')[1] == 'Bildschirm') {
             if (object.name.split('_')[0] == "5") {

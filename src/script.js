@@ -9,7 +9,7 @@ import { RunningFunctions } from './runningFunctions'
 import { MyRaycaster } from './myRaycaster'
 import { LoadingElements } from './loadingElements'
 import { RunningMan } from './runningMan'
-import { Milestones } from './mileStones'
+//import { Milestones } from './mileStones'
 import { MyCamera } from './camera'
 
 
@@ -155,7 +155,7 @@ export function resize() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 }
 
-export function poswitionPoints() {
+export function positionPoints() {
     for (const object of milestones.getAll()) {
         if (object.name.split('_')[1] == 'Bildschirm') {
             if (object.name.split('_')[0] == "5") {

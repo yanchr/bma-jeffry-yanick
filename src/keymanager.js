@@ -32,10 +32,12 @@ export function keyManager(key, runningFunctions, runningMan, camera) {
         case 'shift':
             // Run Faster
             speed = fastSpeed
+            runningMan.setFastRunning(true)
             break
         case 'notshift':
             // Run normal speed
             speed = slowSpeed
+            runningMan.setFastRunning(false)
             break
         case ' ':
             // jump
@@ -44,7 +46,7 @@ export function keyManager(key, runningFunctions, runningMan, camera) {
         case 'c':
             // Change camera position
             camera.changeCameraPosition()
-
+            break
         default:
             break
     }

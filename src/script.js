@@ -11,6 +11,7 @@ import { LoadingElements } from './loadingElements'
 import { RunningMan } from './runningMan'
 import { Milestones } from './milestones'
 import { MyCamera } from './camera'
+import { RunningSolider } from './runningSoldier'
 
 
 
@@ -23,6 +24,7 @@ const loadingElements = new LoadingElements()
 
 const utils = {}
 utils.orbitControls = true
+utils.runningMan = true
 utils.runningMan = {}
 
 // Canvas
@@ -51,7 +53,9 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-const runningMan = new RunningMan(gltfLoader, runningFunctions)
+let runningMan = new RunningMan(gltfLoader, runningFunctions)
+const runningSolider = new RunningSolider(gltfLoader, runningFunctions)
+runningMan = runningSolider
 const milestones = new Milestones(gltfLoader)
 const camera = new MyCamera(sizes, runningFunctions, runningMan)
 listenOnEvents(runningFunctions, runningMan, camera)
@@ -126,7 +130,7 @@ const tick = () => {
     if (!utils.orbitControls) camera.updateCamera(runningMan.getGroup().position)
     if (runningMan.mixer) runningMan.mixer.update(deltaTime)
     if (milestones.mixer) milestones.mixer.update(deltaTime)
-    if (loadingElements.sceneReady) loadPoints()
+    //if (loadingElements.sceneReady) loadPoints()
 
     myRaycaster.detectRaycast(milestones.getAll())
     myRaycaster.updateCarRaycast(runningMan.getGroup().position.clone(), runningFunctions.calculateForwards(runningMan.getGroup().position.clone(), 100), runningMan.getGroup().rotation.y)
@@ -144,6 +148,8 @@ tick()
 /**
  * Functions
  */
+
+
 export function resize() {
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight

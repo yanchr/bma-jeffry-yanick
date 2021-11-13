@@ -11,6 +11,7 @@ import { LoadingElements } from './loadingElements'
 import { RunningMan } from './runningMan'
 import { Milestones } from './milestones'
 import { MyCamera } from './camera'
+import { RunningSolider } from './runningSoldier'
 
 
 
@@ -51,7 +52,8 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-const runningMan = new RunningMan(gltfLoader, runningFunctions)
+// const runningMan = new RunningMan(gltfLoader, runningFunctions)
+const runningMan = new RunningSolider(gltfLoader, runningFunctions)
 const milestones = new Milestones(gltfLoader)
 const camera = new MyCamera(sizes, runningFunctions, runningMan)
 listenOnEvents(runningFunctions, runningMan, camera)

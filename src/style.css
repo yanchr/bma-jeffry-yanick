@@ -21,7 +21,7 @@ body
 .loading-bar
 {
     position: absolute;
-    top: 50%;
+    top: 80%;
     width: 100%;
     height: 2px;
     background-color: #ffffff;
@@ -53,12 +53,13 @@ body
 
   .infos{
     position: absolute;
-    top: 55%;
+    top: 10%;
     left: 50%;
     transform: translateX(-50%);
     background-color: aliceblue;
-    width: 50%;
-    height: 30%;
+    width: 40%;
+    height: 60%;
+    text-align: center;
   }
 
   .fadeOut {
@@ -125,4 +126,8 @@ body
   .point:hover .text
 {
     opacity: 1;
+}
+
+.img-element {
+  height: 100%;
 }

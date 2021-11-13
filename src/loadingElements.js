@@ -41,19 +41,23 @@ export class LoadingElements {
     createLoadingManager() {
         const loadingBarElement = document.querySelector('.loading-bar')
         const infoElement = document.querySelector('.infos')
+        const imgElement = document.createElement('img')
+        infoElement.append(imgElement)
+        imgElement.src = 'legend.png'
+        imgElement.classList.add('img-element')
         const loadingManager = new THREE.LoadingManager(
             // Loaded
             () => {
-                gsap.delayedCall(0.5, () => {
-                    gsap.to(this.overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 })
-                    loadingBarElement.classList.add('ended')
-                    // loadingCircleElement.classList.add('fadeOut')
-                    infoElement.classList.add('fadeOut')
-                    loadingBarElement.style.transform = ''
-                    script.changeOrbitControls()
-                    //script.positionPoints()
-                    this.sceneReady = true
-                })
+                  gsap.delayedCall(0.5, () => {
+                      gsap.to(this.overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 })
+                      loadingBarElement.classList.add('ended')
+                      // loadingCircleElement.classList.add('fadeOut')
+                      infoElement.classList.add('fadeOut')
+                      loadingBarElement.style.transform = ''
+                      script.changeOrbitControls()
+                      //script.positionPoints()
+                      this.sceneReady = true
+                  })
             },
 
             // Progress

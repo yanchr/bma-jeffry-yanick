@@ -31,7 +31,7 @@ export class Milestones {
                 // Animations
                 this.mixer = new THREE.AnimationMixer(gltf.scene)
                 for (let i = 0; i < gltf.animations.length; i++) {
-                    //console.log(gltf.animations)
+                    console.log(gltf.animations)
                     this.action = this.mixer.clipAction(gltf.animations[i])
                     this.action.play()
                 }

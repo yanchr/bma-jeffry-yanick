@@ -37,7 +37,7 @@ export class RunningSolider{
                 this.action = this.mixer.clipAction(this.animations[0])
                 this.action.play()
 
-                console.log(gltf.animations)
+               // console.log(gltf.animations)
             }
         )
     }

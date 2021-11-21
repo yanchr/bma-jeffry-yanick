@@ -131,3 +131,20 @@ body
 .img-element {
   height: 100%;
 }
+
+#video-element {
+  position: absolute;
+  background-color: #abff33;
+  width: 70%;
+  height: 80%;
+  text-align: center;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#video-text{
+  background-color: blue;
+}
+#video-film{
+  background-color: red;
+}

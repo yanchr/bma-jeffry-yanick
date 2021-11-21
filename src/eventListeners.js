@@ -13,11 +13,11 @@ export function listenOnEvents(runningFunctions, runningMan, camera) {
         shift: false
       };
 
-    addEventListener('click', e =>
-    {
-        //console.log('Click')
-    })  
-    
+    //addEventListener('click', e =>
+    //{
+    //    //console.log('Click')
+    //})  
+    //
     window.addEventListener('resize', () => {
         script.resize()
     })

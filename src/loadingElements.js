@@ -53,9 +53,9 @@ export class LoadingElements {
                       loadingBarElement.classList.add('ended')
                       // loadingCircleElement.classList.add('fadeOut')
                       infoElement.classList.add('fadeOut')
+                      infoElement.remove()
                       loadingBarElement.style.transform = ''
                       script.changeOrbitControls()
-                      //script.positionPoints()
                       this.sceneReady = true
                   })
             },

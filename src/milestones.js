@@ -21,7 +21,7 @@ export class Milestones {
 
     loadMileStones() {
         this.gltfLoader.load(
-            '/scenes/jeffry-scene-19.glb',
+            '/scenes/jeffry-scene-22.glb',
             (gltf) => {
                 this.group.add(gltf.scene)
                 gltf.scene.scale.set(0.5, 0.5, 0.5)
@@ -31,7 +31,7 @@ export class Milestones {
                 // Animations
                 this.mixer = new THREE.AnimationMixer(gltf.scene)
                 for (let i = 0; i < gltf.animations.length; i++) {
-                    console.log(gltf.animations)
+                  //  console.log(gltf.animations)
                     this.action = this.mixer.clipAction(gltf.animations[i])
                     this.action.play()
                 }

@@ -12,6 +12,7 @@ import { RunningMan } from './runningMan'
 import { Milestones } from './milestones'
 import { MyCamera } from './camera'
 import { RunningSolider } from './runningSoldier'
+import { DetectObjects } from './detectObjects'
 
 
 
@@ -56,15 +57,17 @@ const sizes = {
 const runningMan = new RunningSolider(gltfLoader, runningFunctions)
 const milestones = new Milestones(gltfLoader)
 const camera = new MyCamera(sizes, runningFunctions, runningMan)
+const detectObjects = new DetectObjects();
 listenOnEvents(runningFunctions, runningMan, camera)
 
 /**
  * Textures
  */
- const cubeTextureLoader = new THREE.CubeTextureLoader()
- /**
- * Environment map
- */
+const cubeTextureLoader = new THREE.CubeTextureLoader()
+/**
+* Environment map
+* set Background
+*/
 const environmentMap = cubeTextureLoader.load([
     '/backgrounds/0/px.png',
     '/backgrounds/0/nx.png',
@@ -82,16 +85,7 @@ scene.add(runningMan.getGroup())
 scene.add(milestones.getGroup())
 
 // Raycaster
-const pointsRaycaster = new THREE.Raycaster()
 scene.add(myRaycaster.getRayCasterObject())
-
-
-const points = [
-    {
-        position: new THREE.Vector3(1.55, 10, - 0.6),
-        element: document.querySelector('.point-0')
-    }
-]
 
 /**
  * Camera
@@ -128,8 +122,6 @@ const tick = () => {
     if (!utils.orbitControls) camera.updateCamera(runningMan.getGroup().position)
     if (runningMan.mixer) runningMan.mixer.update(deltaTime)
     if (milestones.mixer) milestones.mixer.update(deltaTime)
-    if (loadingElements.sceneReady) loadPoints()
-
     myRaycaster.detectRaycast(milestones.getAll())
     myRaycaster.updateCarRaycast(runningMan.getGroup().position.clone(), runningFunctions.calculateForwards(runningMan.getGroup().position.clone(), 100), runningMan.getGroup().rotation.y)
 
@@ -142,10 +134,62 @@ const tick = () => {
 
 tick()
 
+setInterval(() => {
+    const nearScreenName = detectObjects.detectScreenInReach(runningMan.getGroup().position)
+    if (nearScreenName) {
+        displayVideo(nearScreenName)
+    } else {
+        hideVideo()
+    }
+}, 500);
+
 
 /**
  * Functions
  */
+const videoDiv = document.createElement('div')
+const videoText = document.createElement('div')
+const videoFilm = document.createElement('video')
+const videoFilmDiv = document.createElement('div')
+const body = document.querySelector('body')
+let videoContent = ''
+fetch('./videoContent.json')
+    .then(results => results.json())
+    .then(data => videoContent = data)
+
+
+createVideoDiv()
+
+function displayVideo(nearScreenName) {
+
+    videoText.innerText =  videoContent[nearScreenName].text
+    videoFilmDiv.innerText = videoContent[nearScreenName].url
+    body.append(videoDiv)
+
+}
+
+function hideVideo() {
+    if (body.querySelector("#video-element")) {
+        body.removeChild(videoDiv)
+    }
+
+}
+
+function createVideoDiv() {
+    videoDiv.append(videoFilmDiv, videoFilm, videoText)
+    videoDiv.id = "video-element"
+    videoText.id = "video-text"
+    videoFilmDiv.id = "video-filmer"
+    videoFilm.id = "video-film"
+    videoFilm.width = "1200"
+    videoFilm.width = "630"
+    videoFilm.title = "youtube video Player"
+    videoFilm.src = "https://www.youtube.com/watch?v=e48fCCSS3zM"
+    videoFilm.frameborder="0"
+    videoFilm.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    videoFilm.allowfullscreen
+}
+
 export function resize() {
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -155,50 +199,6 @@ export function resize() {
 
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-}
-
-export function positionPoints() {
-    for (const object of milestones.getAll()) {
-        if (object.name.split('_')[1] == 'Bildschirm') {
-            if (object.name.split('_')[0] == "5") {
-                points.forEach(point => point.position = new THREE.Vector3(
-                    object.position.x - 70,
-                    object.position.y,
-                    object.position.z,
-                ))
-            }
-        }
-    }
-}
-
-function loadPoints() {
-    for (const point of points) {
-        const screenPosition = point.position.clone()
-        screenPosition.project(camera.get())
-
-        pointsRaycaster.setFromCamera(screenPosition, camera.get())
-        const intersects = pointsRaycaster.intersectObjects(scene.children, true)
-
-        if (intersects.length === 0) {
-            point.element.classList.add('visible')
-        }
-        else {
-            const intersectionDistance = intersects[0].distance
-            const pointDistance = point.position.distanceTo(camera.get().position)
-
-            if (intersectionDistance < pointDistance) {
-                point.element.classList.remove('visible')
-            }
-            else {
-                point.element.classList.add('visible')
-            }
-        }
-
-
-        const translateX = screenPosition.x * sizes.width * 0.5
-        const translateY = - screenPosition.y * sizes.height * 0.5
-        point.element.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`
-    }
 }
 
 export function changeOrbitControls() {

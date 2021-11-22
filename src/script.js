@@ -139,7 +139,7 @@ setInterval(() => {
     if (nearScreenName) {
         displayVideo(nearScreenName)
     } else {
-        hideVideo()
+       hideVideo()
     }
 }, 500);
 
@@ -149,9 +149,10 @@ setInterval(() => {
  */
 const videoDiv = document.createElement('div')
 const videoText = document.createElement('div')
-const videoFilm = document.createElement('video')
+const videoFilm = document.createElement('iframe')
 const videoFilmDiv = document.createElement('div')
 const body = document.querySelector('body')
+let displayedVideo = false
 let videoContent = ''
 fetch('./videoContent.json')
     .then(results => results.json())
@@ -161,16 +162,24 @@ fetch('./videoContent.json')
 createVideoDiv()
 
 function displayVideo(nearScreenName) {
+    if(videoContent[nearScreenName] && !displayedVideo){
+        displayedVideo = true
+        videoDiv.classList.add("show")
+        videoText.innerText =  videoContent[nearScreenName].text
+        videoFilm.src = videoContent[nearScreenName].url
+        console.log("display")
+        setTimeout(() => body.append(videoDiv),300)
+    }
 
-    videoText.innerText =  videoContent[nearScreenName].text
-    videoFilmDiv.innerText = videoContent[nearScreenName].url
-    body.append(videoDiv)
 
 }
 
 function hideVideo() {
     if (body.querySelector("#video-element")) {
-        body.removeChild(videoDiv)
+        videoDiv.classList.remove("show")
+        setTimeout(() => body.removeChild(videoDiv), 300)
+        displayedVideo = false
+
     }
 
 }
@@ -181,14 +190,14 @@ function createVideoDiv() {
     videoText.id = "video-text"
     videoFilmDiv.id = "video-filmer"
     videoFilm.id = "video-film"
-    videoFilm.width = "1200"
-    videoFilm.width = "630"
+    videoFilm.width = "600"
+    videoFilm.height = "350"
     videoFilm.title = "youtube video Player"
-    videoFilm.src = "https://www.youtube.com/watch?v=e48fCCSS3zM"
+    //videoFilm.src = "./videos/party.mp4"
     videoFilm.frameborder="0"
-    videoFilm.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    videoFilm.allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
     videoFilm.allowfullscreen
-}
+}       
 
 export function resize() {
     sizes.width = window.innerWidth

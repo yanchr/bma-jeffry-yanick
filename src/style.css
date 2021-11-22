@@ -134,17 +134,24 @@ body
 
 #video-element {
   position: absolute;
-  background-color: #abff33;
-  width: 70%;
-  height: 80%;
+  width: 600px;
   text-align: center;
-  left: 50%;
-  top: 50%;
+  left: 80%;
+  top: 30%;
   transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 250ms ease-in;
 }
-#video-text{
-  background-color: blue;
+#video-element.show{
+  opacity: 1;
 }
+
 #video-film{
-  background-color: red;
+}
+
+#video-text{
+  background-color: #ffffff55;
+  border-radius: 50px;
+  margin-top: 30px;
+
 }

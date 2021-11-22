@@ -1,26 +1,26 @@
 {
     "1": {
-        "url": "https://www.youtube.com/embed/6z6u93RrSvI",
+        "url": "https://www.youtube.com/embed/e3XNvWxRrXI?autoplay=1",
         "text": "Erstes Video"
     },
     "2": {
-        "url": "https://www.youtube.com/embed/6z6u93RrSvI",
+        "url": "https://www.youtube.com/embed/6z6u93RrSvI?autoplay=1",
         "text": "zweites Video"
     },
     "3": {
-        "url": "https://www.youtube.com/embed/6z6u93RrSvI",
+        "url": "https://www.youtube.com/embed/p0EUmSvkvgI?autoplay=1",
         "text": "drittes Video"
     },
     "4": {
-        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "url": "https://www.youtube.com/embed/J8zx7LVreTw?autoplay=1",
         "text": "Viertes Video"
     },
     "5": {
-        "url": "https://www.youtube.com/embed/J8zx7LVreTw",
+        "url": "https://www.youtube.com/embed/ylfvH_YskZ4?autoplay=1",
         "text": "Fünftes Video"
     },
     "6": {
-        "url": "./videos/party.mp4",
+        "url": "https://www.youtube.com/embed/e48fCCSS3zM?autoplay=1",
         "text": "Sechstes Video"
     }
 }

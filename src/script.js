@@ -195,7 +195,7 @@ function createVideoDiv() {
     videoFilm.title = "youtube video Player"
     //videoFilm.src = "./videos/party.mp4"
     videoFilm.frameborder="0"
-    videoFilm.allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    videoFilm.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
     videoFilm.allowfullscreen
 }       
 

@@ -21,7 +21,7 @@ export class Milestones {
 
     loadMileStones() {
         this.gltfLoader.load(
-            '/scenes/jeffry-scene-22.glb',
+            '/scenes/jeffry-scene-29.glb',
             (gltf) => {
                 this.group.add(gltf.scene)
                 gltf.scene.scale.set(0.5, 0.5, 0.5)

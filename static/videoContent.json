@@ -1,26 +1,38 @@
 {
     "1": {
         "url": "https://www.youtube.com/embed/e3XNvWxRrXI?autoplay=1",
-        "text": "Erstes Video"
+        "title": "Meilenstein 1 | Erstes Autovideo",
+        "date": "03.01.2020",
+        "text": "Bei diesem Projekt habe ich das erste mal ein Autovideo gefilmt und geschnitten. Es ging um einen Audi S3 welcher mein Kollege neustens gekauft hat. Wir haben uns an dem Datum getroffen und haben beim Regensberg gefilmt. Zufälligerweise hat es sehr gut gepasst mit der Farbe, denn es hatte Schnee und das Auto war weiss."
     },
     "2": {
         "url": "https://www.youtube.com/embed/6z6u93RrSvI?autoplay=1",
-        "text": "zweites Video"
+        "title": "Meilenstein 2 | Auftrag durch Akquise",
+        "date": "17.01.2021",
+        "text": "Bei Meilenstein 2 habe ich das erste mal einen Auftrag bekommen, indem ich auf Instagram Autoliebhaber angeschrieben habe. @frozen.m4 hat auf Instagram meine Arbeiten gesehen und dachte, eine Zusammenarbeit wäre interessant. Wir haben uns in Glattbrugg getroffen und dann Videos und Bilder gemacht."
     },
     "3": {
         "url": "https://www.youtube.com/embed/p0EUmSvkvgI?autoplay=1",
-        "text": "drittes Video"
+        "title": "Meilenstein 3 | Influencerin",
+        "date": "26.02.2021",
+        "text": "Am 26.02.2021 habe ich das erste mal mit einer Influencerin gearbeitet. Eine Garage hat den Auftrag bekommen für die Influencerin @doresaa das Auto zu folieren. Darum hat er mich gefragt, ob ich ein Video erstellen kann, damit sie das in ihre Story postet und Reichweite zu gewinnen. Im Video sieht man das Auto vor dem Folieren, wie es foliert wird und dann wie es nachher aussieht."
     },
     "4": {
         "url": "https://www.youtube.com/embed/J8zx7LVreTw?autoplay=1",
-        "text": "Viertes Video"
+        "title": "Meilenstein 4 | Lamborghini Video",
+        "date": "11.04.2021",
+        "text": "Das erste mal habe ich ein sehr krasses Auto bekommen um zu filmen. Es war ein Lamborghini Gallardo LP-560. Es war ein grosser Erfolg für mich, da man nicht so leicht an so ein krasses Auto kommt. Bei dem Video habe ich mich auch bisschen mit After Effects auseinander gesetzt und erste Textanimationen implementiert."
     },
     "5": {
         "url": "https://www.youtube.com/embed/ylfvH_YskZ4?autoplay=1",
-        "text": "Fünftes Video"
+        "title": "Meilenstein 5 | FPV Drohnen Video",
+        "date": "24.09.2021",
+        "text": "Über den Sommer habe ich mir eine FPV Drohne zugelegt um spezielle Videos zu machen in der Luft. Mehrere Monate habe ich geübt und bei diesem Projekt konnte ich es das erste mal einsetzten. Bei dem Video fliege ich um einen sehr speziellen Lamborghini Huracan in babyblau."
     },
     "6": {
         "url": "https://www.youtube.com/embed/e48fCCSS3zM?autoplay=1",
-        "text": "Sechstes Video"
+        "title": "Meilenstein 6 | Aftermovie im Club",
+        "date": "25.09.2021",
+        "text": "Da die kalte Zeit langsam kommt und immer mehr Leute in den Club gehen, habe ich mir gedacht, dass ich mal ein Aftermovie erstellen könnte. @limezurich habe ich angeschrieben und sie hatten Intresse. Am 25.09.2021 konnte ich den ganzen Abend bei der grössten ü16 Party in Zürich filmen."
     }
 }

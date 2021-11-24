@@ -54,7 +54,7 @@ body
   .infos{
     position: absolute;
     top: 10%;
-    left: 50%;
+    left: 41%;
     transform: translateX(-50%);
     background-color: aliceblue;
     width: 40%;
@@ -135,9 +135,8 @@ body
 #video-element {
   position: absolute;
   width: 600px;
-  text-align: center;
   left: 80%;
-  top: 30%;
+  top: 40%;
   transform: translate(-50%, -50%);
   opacity: 0;
   transition: opacity 250ms ease-in;
@@ -149,9 +148,24 @@ body
 #video-film{
 }
 
-#video-text{
-  background-color: #ffffff55;
-  border-radius: 50px;
+#video-text-div{
+  background-color: #ffffffaa;
   margin-top: 30px;
+  border-radius: 50px;
+  padding: 20px;
+  text-align: center;
+}
+#video-text{
+  margin-top: 10px;
+  font-size: 20px;
+  text-align: justify;
+}
 
+#video-date{
+  margin-top: 10px;
+  font-size: 30px;
+}
+
+#video-title{
+  font-size: 30px;
 }

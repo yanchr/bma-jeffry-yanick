@@ -85,7 +85,7 @@ scene.add(runningMan.getGroup())
 scene.add(milestones.getGroup())
 
 // Raycaster
-scene.add(myRaycaster.getRayCasterObject())
+//scene.add(myRaycaster.getRayCasterObject())
 
 /**
  * Camera
@@ -132,7 +132,25 @@ const tick = () => {
     window.requestAnimationFrame(tick)
 }
 
+const material = new THREE.MeshBasicMaterial({color: 0xff0000})
+const object = new THREE.BoxGeometry(5, 5, 5, 5)
+function showAllItems() {
+    if(milestones.getAll()[0]) {
+        milestones.getAll().forEach(milestone => {
+            const mesh = new THREE.Mesh(object, material)
+            scene.add(mesh)
+            mesh.position.set(milestone.position.x, milestone.position.y, milestone.position.z)
+            console.log(mesh.position)
+            //console.log(milestone.position)
+        })
+    }
+}
+
 tick()
+
+/* setInterval(() => {
+showAllItems()
+}, 1000) */
 
 setInterval(() => {
     const nearScreenName = detectObjects.detectScreenInReach(runningMan.getGroup().position)
@@ -149,6 +167,9 @@ setInterval(() => {
  */
 const videoDiv = document.createElement('div')
 const videoText = document.createElement('div')
+const videoTitle = document.createElement('h3')
+const videoDate = document.createElement('h4')
+const videoTextDiv = document.createElement('div')
 const videoFilm = document.createElement('iframe')
 const videoFilmDiv = document.createElement('div')
 const body = document.querySelector('body')
@@ -167,6 +188,8 @@ function displayVideo(nearScreenName) {
         videoDiv.classList.add("show")
         videoText.innerText =  videoContent[nearScreenName].text
         videoFilm.src = videoContent[nearScreenName].url
+        videoTitle.innerText = videoContent[nearScreenName].title
+        videoDate.innerText = videoContent[nearScreenName].date
         console.log("display")
         setTimeout(() => body.append(videoDiv),300)
     }
@@ -185,9 +208,13 @@ function hideVideo() {
 }
 
 function createVideoDiv() {
-    videoDiv.append(videoFilmDiv, videoFilm, videoText)
+    videoDiv.append(videoFilmDiv, videoFilm, videoTextDiv)
+    videoTextDiv.append(videoTitle, videoDate, videoText)
     videoDiv.id = "video-element"
+    videoDate.id = "video-date"
+    videoTextDiv.id = "video-text-div"
     videoText.id = "video-text"
+    videoTitle.id = "video-title"
     videoFilmDiv.id = "video-filmer"
     videoFilm.id = "video-film"
     videoFilm.width = "600"
@@ -195,7 +222,7 @@ function createVideoDiv() {
     videoFilm.title = "youtube video Player"
     //videoFilm.src = "./videos/party.mp4"
     videoFilm.frameborder="0"
-    videoFilm.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    videoFilm.allow="accelerometer; fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
     videoFilm.allowfullscreen
 }       
 

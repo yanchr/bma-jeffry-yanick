@@ -4,7 +4,7 @@ import { RunningFunctions } from './runningFunctions'
 const fastSpeed = 2 
 const slowSpeed = 0.5
 let speed = slowSpeed
-const rotationStrength = 128
+const rotationStrength = 64
 export function keyManager(key, runningFunctions, runningMan, camera) {
     switch (key) {
         case 'w':

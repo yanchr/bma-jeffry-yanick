@@ -7,7 +7,8 @@ export class RunningSolider{
     action = null
     group = new THREE.Group()
     gltfLoader = new GLTFLoader()
-    position = { x: -20, y: 2, z: 150 }
+    //position = { x: -20, y: 2, z: 150 }
+    position = { x: -10, y: 2, z: -350 }
     animations = []
     rotation = Math.PI
     runningFunctions = null
@@ -30,7 +31,8 @@ export class RunningSolider{
                 this.runningFunctions.position = this.position
                 this.runningFunctions.rotation = this.rotation
                 this.group.rotateY(this.rotation)
-
+                this.rotateRunningMan(Math.PI)
+                this.runningFunctions.addRotation(Math.PI)
                 this.mixer = new THREE.AnimationMixer(gltf.scene)
                 this.animations = gltf.animations
                 this.runningFunctions.animations = gltf.animations

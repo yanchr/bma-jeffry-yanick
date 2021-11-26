@@ -9,8 +9,8 @@ export class RunningFunctions {
     mixer = new THREE.AnimationMixer()
     object = new THREE.Group()
     //rotation = this.object.rotation.y
-    
-    addRotation(rotation){
+
+    addRotation(rotation) {
         this.rotation += rotation
     }
 
@@ -44,11 +44,11 @@ export class RunningFunctions {
         return currentPosition
     }
 
-    shortWay(currentDirection, runningLength){
+    shortWay(currentDirection, runningLength) {
         return currentDirection * runningLength
     }
 
-    longWay(currentDirection, runningLength){
+    longWay(currentDirection, runningLength) {
         return (1 - currentDirection) * runningLength
     }
 }

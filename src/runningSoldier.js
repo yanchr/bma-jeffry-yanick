@@ -13,6 +13,7 @@ export class RunningSolider{
     rotation = Math.PI
     runningFunctions = null
     fastRunning = false
+    walkingForwards = true
 
     constructor(gltfLoader, runningFunctions) {
         this.gltfLoader = gltfLoader
@@ -95,5 +96,9 @@ export class RunningSolider{
 
     setFastRunning(runningFast) {
         this.fastRunning = runningFast
+    }
+
+    isWalkingForwards() {
+        return this.walkingForwards
     }
 }

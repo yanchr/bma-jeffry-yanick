@@ -4,6 +4,14 @@ import * as THREE from 'three'
 export class DetectObjects{
     positionOfScreens = new Map()
     needDistanceToScreen = 20
+
+    positionOfStreetEdges = [
+        "35",
+        "-70",
+        "-367",
+        "150"
+    ]
+
   
     constructor(){
        this.positionOfScreens.set("1", new THREE.Vector3(20, 0, -336))
@@ -25,5 +33,15 @@ export class DetectObjects{
             
             if(distanceToMen < this.needDistanceToScreen) return screen[0]
         }
+    }
+
+    detectAbilityToWalk(runningMan, runningFunctions){
+        const positionOfMen = runningMan.getGroup().position
+            if(positionOfMen.x > this.positionOfStreetEdges[0] || positionOfMen.x < this.positionOfStreetEdges[1] || positionOfMen.z < this.positionOfStreetEdges[2] || positionOfMen.z > this.positionOfStreetEdges[3]){
+                const distance = runningMan.isWalkingForwards() ? -5 : 5
+                runningMan.gaspRunningManToPosition(runningFunctions.calculateForwards(runningFunctions.position, distance))
+                return false
+        }
+       return true
     }
 }

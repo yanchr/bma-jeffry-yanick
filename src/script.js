@@ -122,6 +122,7 @@ const tick = () => {
     if (!utils.orbitControls) camera.updateCamera(runningMan.getGroup().position)
     if (runningMan.mixer) runningMan.mixer.update(deltaTime)
     if (milestones.mixer) milestones.mixer.update(deltaTime)
+    const isAbleToWalk = detectObjects.detectAbilityToWalk(runningMan, runningFunctions)
     myRaycaster.detectRaycast(milestones.getAll())
     myRaycaster.updateCarRaycast(runningMan.getGroup().position.clone(), runningFunctions.calculateForwards(runningMan.getGroup().position.clone(), 100), runningMan.getGroup().rotation.y)
 
@@ -140,7 +141,7 @@ function showAllItems() {
             const mesh = new THREE.Mesh(object, material)
             scene.add(mesh)
             mesh.position.set(milestone.position.x, milestone.position.y, milestone.position.z)
-            console.log(mesh.position)
+            //console.log(mesh.position)
             //console.log(milestone.position)
         })
     }
@@ -148,12 +149,13 @@ function showAllItems() {
 
 tick()
 
-/* setInterval(() => {
-showAllItems()
-}, 1000) */
+ setInterval(() => {
+//addshowAllItems()
+}, 1000)
 
 setInterval(() => {
     const nearScreenName = detectObjects.detectScreenInReach(runningMan.getGroup().position)
+    //console.log(isAbleToWalk)
     if (nearScreenName) {
         displayVideo(nearScreenName)
     } else {

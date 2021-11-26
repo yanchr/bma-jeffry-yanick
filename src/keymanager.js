@@ -10,6 +10,7 @@ export function keyManager(key, runningFunctions, runningMan, camera) {
         case 'w':
             // Run Forwards
             runningMan.gaspRunningManToPosition(runningFunctions.calculateForwards(runningFunctions.position, speed))
+            runningMan.walkingForwards = true
             break
         case 'a':
             // Turn to left
@@ -24,6 +25,7 @@ export function keyManager(key, runningFunctions, runningMan, camera) {
         case 's':
             // Run Backwards
             runningMan.gaspRunningManToPosition(runningFunctions.calculateForwards(runningFunctions.position, -speed))
+            runningMan.walkingForwards = false
             break
         case 'o':
             // Change Camera to Orbit Controls
